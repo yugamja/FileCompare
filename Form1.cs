@@ -62,9 +62,9 @@ namespace FileCompare
                             if (f.LastWriteTime == rf.LastWriteTime)
                                 item.Tag = "SAME";
                             else if (f.LastWriteTime > rf.LastWriteTime)
-                                item.Tag = "NEW";
+                                item.Tag = "NEW";   // 왼쪽이 더 최신
                             else
-                                item.Tag = "OLD";
+                                item.Tag = "OLD";   // 왼쪽이 더 오래됨
                         }
                     }
                     else if (lv == lvwRightDir && Directory.Exists(txtLeftDir.Text))
@@ -82,9 +82,9 @@ namespace FileCompare
                             if (f.LastWriteTime == lf.LastWriteTime)
                                 item.Tag = "SAME";
                             else if (f.LastWriteTime > lf.LastWriteTime)
-                                item.Tag = "NEW";
+                                item.Tag = "NEW";   // 오른쪽이 더 최신
                             else
-                                item.Tag = "OLD";
+                                item.Tag = "OLD";   // 오른쪽이 더 오래됨
                         }
                     }
 
@@ -92,6 +92,7 @@ namespace FileCompare
                 }
 
 
+                // 컬럼너비자동조정(컨텐츠기준)
                 for (int i = 0; i < lv.Columns.Count; i++)
                 {
                     lv.AutoResizeColumn(i,
@@ -119,6 +120,7 @@ namespace FileCompare
             using (var dlg = new FolderBrowserDialog())
             {
                 dlg.Description = "폴더를선택하세요.";
+                // 현재텍스트박스에있는경로를초기선택폴더로설정
                 if (!string.IsNullOrWhiteSpace(txtLeftDir.Text) &&
                 Directory.Exists(txtLeftDir.Text))
                 {
@@ -142,6 +144,7 @@ namespace FileCompare
             using (var dlg = new FolderBrowserDialog())
             {
                 dlg.Description = "폴더를선택하세요.";
+                // 현재텍스트박스에있는경로를초기선택폴더로설정
                 if (!string.IsNullOrWhiteSpace(txtRightDir.Text) &&
                 Directory.Exists(txtRightDir.Text))
                 {
@@ -161,32 +164,32 @@ namespace FileCompare
         }
 
         private void CopyFileWithConfirmation(string srcPath, string destPath)
-        {
-            var srcInfo = new FileInfo(srcPath);
+{
+    var srcInfo = new FileInfo(srcPath);
 
-            if (File.Exists(destPath))
-            {
-                var destInfo = new FileInfo(destPath);
+    if (File.Exists(destPath))
+    {
+        var destInfo = new FileInfo(destPath);
 
-                string msg =
-                    $"파일이 이미 존재합니다.\n\n" +
-                    $"[원본]\n{srcInfo.LastWriteTime}\n\n" +
-                    $"[대상]\n{destInfo.LastWriteTime}\n\n" +
-                    $"덮어쓰시겠습니까?";
+        string msg =
+            $"파일이 이미 존재합니다.\n\n" +
+            $"[원본]\n{srcInfo.LastWriteTime}\n\n" +
+            $"[대상]\n{destInfo.LastWriteTime}\n\n" +
+            $"덮어쓰시겠습니까?";
 
-                var result = MessageBox.Show(
-                    msg,
-                    "복사 확인",
-                    MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Question
-                );
+        var result = MessageBox.Show(
+            msg,
+            "복사 확인",
+            MessageBoxButtons.YesNo,
+            MessageBoxIcon.Question
+        );
 
-                if (result != DialogResult.Yes)
-                    return;
-            }
+        if (result != DialogResult.Yes)
+            return;
+    }
 
-            File.Copy(srcPath, destPath, true);
-        }
+    File.Copy(srcPath, destPath, true);
+}
 
         private void btnCopyFromLeft_Click(object sender, EventArgs e)
         {
@@ -250,6 +253,7 @@ namespace FileCompare
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            // 왼쪽
             lvwLeftDir.View = View.Details;
             lvwLeftDir.FullRowSelect = true;
             lvwLeftDir.GridLines = true;
@@ -258,6 +262,7 @@ namespace FileCompare
             lvwLeftDir.Columns.Add("크기", 100);
             lvwLeftDir.Columns.Add("수정일", 160);
 
+            // 오른쪽
             lvwRightDir.View = View.Details;
             lvwRightDir.FullRowSelect = true;
             lvwRightDir.GridLines = true;
