@@ -163,14 +163,82 @@ namespace FileCompare
             }
         }
 
+        private void CopyFileWithConfirmation(string srcPath, string destPath)
+        {
+            var srcInfo = new FileInfo(srcPath);
+
+            if (File.Exists(destPath))
+            {
+                var destInfo = new FileInfo(destPath);
+
+                string msg =
+                    $"파일이 이미 존재합니다.\n\n" +
+                    $"[원본]\n{srcInfo.LastWriteTime}\n\n" +
+                    $"[대상]\n{destInfo.LastWriteTime}\n\n" +
+                    $"덮어쓰시겠습니까?";
+
+                var result = MessageBox.Show(
+                    msg,
+                    "복사 확인",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question
+                );
+
+                if (result != DialogResult.Yes)
+                    return;
+            }
+
+            File.Copy(srcPath, destPath, true);
+        }
+
         private void btnCopyFromLeft_Click(object sender, EventArgs e)
         {
+            if (lvwLeftDir.SelectedItems.Count == 0)
+            {
+                MessageBox.Show("파일을 선택하세요.");
+                return;
+            }
 
+            foreach (ListViewItem item in lvwLeftDir.SelectedItems)
+            {
+                if (item.SubItems[1].Text == "<DIR>")
+                    continue;
+
+                string fileName = item.Text;
+
+                string srcPath = Path.Combine(txtLeftDir.Text, fileName);
+                string destPath = Path.Combine(txtRightDir.Text, fileName);
+
+                CopyFileWithConfirmation(srcPath, destPath);
+            }
+
+            PopulateListView(lvwLeftDir, txtLeftDir.Text);
+            PopulateListView(lvwRightDir, txtRightDir.Text);
         }
 
         private void btnCopyFromRight_Click(object sender, EventArgs e)
         {
+            if (lvwRightDir.SelectedItems.Count == 0)
+            {
+                MessageBox.Show("파일을 선택하세요.");
+                return;
+            }
 
+            foreach (ListViewItem item in lvwRightDir.SelectedItems)
+            {
+                if (item.SubItems[1].Text == "<DIR>")
+                    continue;
+
+                string fileName = item.Text;
+
+                string srcPath = Path.Combine(txtRightDir.Text, fileName);
+                string destPath = Path.Combine(txtLeftDir.Text, fileName);
+
+                CopyFileWithConfirmation(srcPath, destPath);
+            }
+
+            PopulateListView(lvwLeftDir, txtLeftDir.Text);
+            PopulateListView(lvwRightDir, txtRightDir.Text);
         }
 
         private void lvwLeftDir_SelectedIndexChanged(object sender, EventArgs e)
