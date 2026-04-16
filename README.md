@@ -15,3 +15,8 @@
 ![실행화면](img/task-1.png)
 
 - 구현한 내용 (위 그림 참조)
+	- SplitContainer -> Panel -> Label, TextBox, Button, ListView 순으로 컨트롤을 이용해 UI 구성을 마침.
+	- Dock 속성을 설정해 SplitContainer에 Panel을 고정함.
+	- Anchor 속성을 설정해 창 크기가 변해도 Label, TextBox, Button, ListView 각 컨트롤이 패널에 고정되도록 함.
+	- FolderBrowserDialog를 사용해 사용자가 버튼을 통해 폴더를 선택할 수 있도록 대화상자를 띄우도록 함.
+	- 
